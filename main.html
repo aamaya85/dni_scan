@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNI Scanner</title>
+
+    <!-- ZXING EXAMPLE -->
+
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    <!-- FUNCTIONS JS -->
+
+    <script src="functions.js"></script>
+
+    <!-- ZXING -->
+    <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest"></script>
+
+</head>
+
+<body class="container text-center">
+    <div class="header mt-3 mb-0">
+      <div class="row align-items-left ml-4">
+        <div class="mr-2" style="height: 90px; width: 20px; background-color: blue;">
+        </div>
+        <div>
+          <h1 class="display-6">DNI Scan-App</h1>
+          <p class="lead">Prueba de registro de DNIs</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- MAIN MENU -->
+    <div class="container-md" id="main-menu">
+        <p>Elegí una de las opciones. El sistema registrará el DNI (en caso de no estar cargado) y la fecha y hora del evento.</p>
+        <button type="button" class="btn btn-primary btn-lg" id="startScanButton">ESCANEAR DNI</button>
+        <br><br>
+        <button type="button" class="btn btn-primary btn-lg" id="manualRecord">INGRESO MANUAL</button>
+        <br><br>
+        <!-- <button type="button" class="btn btn-primary btn-lg" id="testButton">MODAL</button> -->
+    </div>
+
+    <!-- SCAN  -->
+    <div class="col" id="scan-view">
+      <div>
+        <video id="video" width="100%" height="280" style="object-fit: none; border: 1px solid gray"></video>
+      </div>
+      <div>
+        <a class="btn btn-primary btn-lg" href="#" id="stopScanButton" role="button">VOLVER</a>
+      </div>
+    </div>
+
+    <!-- data -->
+    <div style="display: none">
+      <input type="number" id="data-dni" value="">
+      <input type="text" id="data-apellido" value="">
+      <input type="text" id="data-nombres" value="">
+      <input type="text" id="data-fecha_nac" value="">
+    </div>
+
+    <!-- Modal confirm -->
+    <div class="modal fade" id="confirmDataModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Datos obtenidos</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <b>DNI: </b><p id="info-dni"></p>
+            <b>NOMBRE: </b><p><span id="info-apellido"></span>, <span id="info-nombres"></span></p>
+            <b>FECHA DE NACIMIENTO: </b><p id="info-fecha_nac"></p>
+          </div>
+          <div class="modal-footer" style="text-align: center; display: block">
+            <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-success btn-lg" id="recordDataButton">Registrar</button>
+          </div>
+        </div>
+      </div>
+    </div>  
+
+    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+            <h5 id="alert_title" class="alert-heading"></h5>
+            <p id="message_alert"></p>
+            <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-body">
+          <div class="alert alert-success" role="alert">
+            <h5 id="success_title" class="alert-heading"></h5>
+            <p id="message_success"></p>
+            <button type="button" class="btn btn-success btn-lg" data-dismiss="modal">Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <form class="needs-validation" id="ingresoManualForm" novalidate>
+        <input hidden type="text" name="manual" value=true />
+        <div class="form-col">
+          <div class="mb-3">
+            <input type="text" name="inputDni" placeholder="DNI" onfocus="this.placeholder = ''" onblur="this.placeholder = 'DNI'" pattern="[0-9]*" length maxlength="8" class="form-control" id="dni" value="" required>
+            <div class="invalid-feedback">
+              DNI inválido
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="text" name="inputName" placeholder="Nombre" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Nombre'" class="form-control" id="validationInput01" value="" required>
+            <div class="invalid-feedback">
+              Ingresá un nombre
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="text" name="inputLastname" placeholder="Apellido" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Apellido'" class="form-control" id="validationInput02" value="" required>
+            <div class="invalid-feedback">
+              Ingresá el apellido
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-3">
+            <button class="btn btn-success btn-lg" id="submitFormButton" type="button">ACEPTAR</button>
+          </div>
+          <div>
+            <button class="btn btn-danger btn-lg" id="backButton" type="button">CANCELAR</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <style>
+      
+      #ingresoManualForm input {
+        text-align: center;
+      }
+      
+      .form-control {
+        font-size: 1.2rem !important
+      }
+
+      .modal-body {
+        word-break: break-all;
+      }
+
+    </style>
+
+
+</body>
+
+</html>
