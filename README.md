@@ -1,14 +1,14 @@
-## DNI Scanner
-Simple aplicación web mobile para escanear un QR Code de un DNI y obtener los datos en un objeto JSON.
+## License Scanner
+A simple mobile web application to scan a QR Code from an ID card and obtain the data in a JSON object.
 
-### Uso <br />
-Subir los archivos a un servidor HTTPS (_por el momento se requiere esto para importar correctamente la librería @zxing_)<br />
-Los datos se pueden obtener escaneando el Código QR del DNI o se pueden ingresar manualmente.<br />
+### Usage <br />
+Upload the files to an HTTPS server (currently, this is required to correctly import the @zxing library)<br />
+The data can be obtained by scanning the QR Code of the ID card or it can be entered manually.<br />
 
-La función sendData() recibe los datos obtenidos en un objeto JSON y los muestra en un modal de Bootstrap.
+The sendData() function receives the data in a JSON object and displays it in a Bootstrap modal.
 
-### Capturas
-#### HOME, Lector && Ingreso Manual<br />
+### Screenshots
+#### HOME, Scanner & Manual Entry
 ![alt text](https://github.com/aamaya85/dni_scan/blob/main/captures/IMG_6204.PNG)
 ![alt text](https://github.com/aamaya85/dni_scan/blob/main/captures/IMG_6205.PNG)
 ![alt text](https://github.com/aamaya85/dni_scan/blob/main/captures/IMG_6207.PNG)
